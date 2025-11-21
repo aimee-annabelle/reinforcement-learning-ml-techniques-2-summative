@@ -5,7 +5,8 @@ This module provides pygame-based visualization for the Rwanda Health Clinic rei
 ## Files
 
 - **`rendering.py`**: Core rendering module with `ClinicRenderer` class
-- **`demo_visualization.py`**: Standalone demo script showing the visualization
+- **`custom_env.py`**: Gymnasium environment that drives the renderer during training and demos
+- **`demo_visualization.py`**: Standalone rollout script that samples random actions from the custom environment and renders them
 
 ## Features
 
@@ -44,57 +45,25 @@ This module provides pygame-based visualization for the Rwanda Health Clinic rei
 
 ## Usage
 
-### Option 1: Use with Your RL Environment
-
-```python
-from environment.rendering import ClinicRenderer
-
-# In your environment class
-class RwandaHealthEnv(gym.Env):
-    def __init__(self, render_mode="human"):
-        # ... your initialization code ...
-
-        if render_mode == "human":
-            self.renderer = ClinicRenderer()
-
-    def render(self):
-        if self.render_mode == "human":
-            state = {
-                'patient_age': self.patient_age,
-                'symptom_severity': self.symptom_severity,
-                'chronic_risk': self.chronic_risk,
-                'infection_risk': self.infection_risk,
-                'comorbidity_flag': self.comorbidity_flag,
-                'ncd_tested': self.ncd_tested,
-                'infection_tested': self.infection_tested,
-                'diagnosed': self.diagnosed,
-                'treated': self.treated,
-                'test_kits': self.test_kits,
-                'initial_test_kits': self.initial_test_kits,
-                'meds': self.meds,
-                'initial_meds': self.initial_meds,
-                'queue_length': self.queue_length,
-                'max_queue': self.max_queue,
-                'last_action': self.last_action,
-                'last_reward': self.last_reward,
-                'step_count': self.step_count,
-                'max_steps': self.max_steps,
-            }
-            self.renderer.render(state)
-
-    def close(self):
-        if hasattr(self, 'renderer'):
-            self.renderer.close()
-```
-
-### Option 2: Run Standalone Demo
+### Option 1: Run the standalone demo
 
 ```bash
 # From the project root directory
 python environment/demo_visualization.py
 ```
 
-This will show a simulation with random states updating over 30 steps.
+The script creates `RwandaHealthEnv(render_mode="human")`, samples random actions, and renders the full pygame dashboard for approximately fifty steps (or until the episode ends).
+
+### Option 2: Import the environment in notebooks or training scripts
+
+```python
+from environment.custom_env import RwandaHealthEnv
+
+env = RwandaHealthEnv(render_mode="human")  # or None for headless training
+obs, info = env.reset(seed=42)
+```
+
+The `training/rl_training.ipynb` notebook and any other scripts should import the environment from `environment.custom_env` so that training and evaluation share the same implementation.
 
 ## Requirements
 
@@ -125,15 +94,7 @@ renderer = ClinicRenderer(
 
 ## Integration with Training
 
-When training RL agents, you can toggle visualization:
-
-```python
-# Training mode (no visualization)
-env = RwandaHealthEnv(render_mode=None)
-
-# Evaluation mode (with visualization)
-env = RwandaHealthEnv(render_mode="human")
-```
+When training RL agents, set `render_mode=None` to avoid opening a window. Switch to `render_mode="human"` for evaluation runs or video captures.
 
 ## Troubleshooting
 
@@ -161,7 +122,4 @@ The visualization displays:
 
 Perfect for:
 
-- [x] Debugging environment logic
-- [x] Recording training videos
-- [x] Presenting results
-- [x] Understanding agent behavior
+Suitable for debugging environment logic, recording training videos, presenting results, and understanding agent behavior.

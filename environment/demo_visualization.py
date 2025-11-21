@@ -1,103 +1,58 @@
 """
-Example script demonstrating pygame visualization for Rwanda Health Clinic RL Environment
-Run this script to see the visualization in action with a random agent
+Random rollout demo that drives the RwandaHealthEnv environment with pygame rendering.
 """
 
 import sys
 import os
 import time
 
-# Add parent directory to path to import modules
+# Ensure the package root is discoverable when running as a standalone script
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from environment.rendering import ClinicRenderer
+from environment.custom_env import RwandaHealthEnv, ACTION_MEANINGS
 
 
-def create_sample_state(step: int, max_steps: int = 50) -> dict:
-    """
-    Create a sample environment state for demonstration
-
-    Args:
-        step: Current step number
-        max_steps: Maximum steps in episode
-
-    Returns:
-        Dictionary containing environment state
-    """
-    import random
-
-    return {
-        'patient_age': random.randint(20, 70),
-        'symptom_severity': random.uniform(0.3, 0.9),
-        'chronic_risk': random.uniform(0.2, 0.8),
-        'infection_risk': random.uniform(0.2, 0.8),
-        'comorbidity_flag': random.choice([0, 1]),
-        'ncd_tested': random.choice([True, False]),
-        'infection_tested': random.choice([True, False]),
-        'diagnosed': random.choice([True, False]),
-        'treated': random.choice([True, False]),
-        'test_kits': max(0, 10 - step // 5),
-        'initial_test_kits': 10,
-        'meds': max(0, 20 - step // 3),
-        'initial_meds': 20,
-        'queue_length': random.randint(0, 25),
-        'max_queue': 30,
-        'last_action': random.randint(0, 6),
-        'last_reward': random.uniform(-5, 10),
-        'step_count': step,
-        'max_steps': max_steps,
-    }
-
-
-def main():
-    """Main demonstration function"""
+def main() -> None:
     print("=" * 60)
-    print("Rwanda Health Clinic - Pygame Visualization Demo")
+    print("Rwanda Health Clinic - Environment Visualization Demo")
     print("=" * 60)
-    print("\nInitializing renderer...")
+    print("\nSpawning environment...")
 
-    # Create renderer
-    renderer = ClinicRenderer(screen_width=1000, screen_height=700, fps=2)
-
-    print("Renderer initialized successfully!")
-    print("\nRunning simulation with random actions...")
-    print("Close the pygame window to stop the simulation.\n")
+    env = RwandaHealthEnv(render_mode="human")
 
     try:
-        max_steps = 30
+        obs, info = env.reset(seed=42)
+        print("Initial observation shape:", obs.shape)
+        print("Initial info:", info)
 
+        max_steps = 50
         for step in range(max_steps):
-            # Generate sample state
-            state = create_sample_state(step, max_steps)
+            action = env.action_space.sample()
+            obs, reward, terminated, truncated, info = env.step(action)
+            env.render()
 
-            # Render the state
-            renderer.render(state)
+            print(
+                f"Step {step + 1}/{max_steps} | Action={ACTION_MEANINGS[action]} | Reward={reward:+.2f} | "
+                f"Queue={info['queue_length']} | Kits={info['test_kits']} | Meds={info['meds']}"
+            )
 
-            # Print step info to console
-            print(f"Step {step + 1}/{max_steps} - "
-                  f"Action: {renderer.action_meanings[state['last_action']]} - "
-                  f"Reward: {state['last_reward']:+.2f}")
+            time.sleep(0.5)
 
-            # Slow down for viewing
-            time.sleep(0.8)
+            if terminated or truncated:
+                print("Episode ended due to", "termination" if terminated else "truncation")
+                obs, info = env.reset()
+                print("\nEnvironment reset. Continue random rollout...\n")
 
         print("\n" + "=" * 60)
-        print("Simulation complete!")
+        print("Demo finished")
         print("=" * 60)
 
-        # Keep window open for a moment
-        time.sleep(2)
-
     except KeyboardInterrupt:
-        print("\n\nSimulation stopped by user.")
-
-    except Exception as e:
-        print(f"\n\nError occurred: {e}")
+        print("\nDemo interrupted by user")
 
     finally:
-        print("Closing renderer...")
-        renderer.close()
-        print("Done!")
+        env.close()
+        print("Renderer closed.")
 
 
 if __name__ == "__main__":

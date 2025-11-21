@@ -1,6 +1,5 @@
 """
 Pygame Visualization Module for Rwanda Health Clinic RL Environment
-Author: Rwanda Health AI Team
 Description: Provides visual rendering for the healthcare decision support system
 """
 
