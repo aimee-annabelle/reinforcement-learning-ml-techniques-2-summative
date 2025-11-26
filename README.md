@@ -140,8 +140,8 @@ More detailed analysis with learning curves and statistical comparisons can be f
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/aimee-annabelle/reinforcement-learning-ml-techniques-2-summative.git
-   cd reinforcement-learning-ml-techniques-2-summative
+   git clone https://github.com/aimee-annabelle/annabelle_ineza_rl_summative.git
+   cd annabelle_ineza_rl_summative.git
    ```
 
 2. **Create virtual environment** (recommended)
@@ -266,7 +266,7 @@ tensorboard --logdir training_logs
 ## Project Structure
 
 ```
-reinforcement-learning-ml-techniques-2-summative/
+annabelle_ineza_rl_summative.git/
 │
 ├── environment/
 │   ├── custom_env.py           # RwandaHealthEnv Gymnasium environment
@@ -306,7 +306,6 @@ reinforcement-learning-ml-techniques-2-summative/
 │   ├── dqn/
 │   ├── ppo/
 │   ├── a2c/
-│   └── reinforce/
 │
 ├── docs/                       # Documentation and diagrams
 │   └── environment_diagram.png
