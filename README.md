@@ -6,13 +6,13 @@ This project applies reinforcement learning to healthcare decision-making in Rwa
 
 The environment models realistic challenges faced in resource-limited clinics: deciding when diagnostic tests are truly necessary, making diagnoses with incomplete information, allocating scarce medications effectively, and managing patient queues while maintaining care standards.
 
----
+
 
 ## Problem Statement
 
 Healthcare workers in resource-limited clinics face constant trade-offs: deciding when diagnostic tests are necessary versus clinical assessment, allocating scarce medications, managing growing patient queues while maintaining accuracy, and determining when to refer patients to specialists. This simulation models these tensions, letting the RL agent learn optimal decision patterns through thousands of patient encounters.
 
----
+
 
 ## Environment Architecture
 
@@ -72,7 +72,7 @@ The agent observes:
 - Queue overflow (≥ 30 patients)
 - Max steps reached (50 steps default)
 
----
+
 
 ## Reinforcement Learning Algorithms
 
@@ -106,12 +106,12 @@ I implemented and compared four different RL approaches to see which works best 
 - **Key Features**: Episode-based learning, entropy regularization
 - **Strengths**: Simple, interpretable, works in continuous action spaces
 
----
+
 
 ## Results Summary
 
 | Algorithm     | Best Run | Mean Reward | Std Reward | Training Time |
-| ------------- | -------- | ----------- | ---------- | ------------- |
+| - | -- | -- | - | - |
 | **DQN**       | run_08   | **189.74**  | 44.92      | 1097s         |
 | **PPO**       | run_08   | **171.40**  | 33.53      | 583s          |
 | **A2C**       | run_01   | **110.16**  | 50.61      | 756s          |
@@ -125,7 +125,7 @@ A2C performed moderately well but showed high variance - some runs worked great,
 
 More detailed analysis with learning curves and statistical comparisons can be found in `training/results_analysis.ipynb`.
 
----
+
 
 ## Installation & Setup
 
@@ -170,7 +170,7 @@ More detailed analysis with learning curves and statistical comparisons can be f
 - `pygame-ce==2.5.1` - Visualization and rendering
 - `tensorboard==2.17.1` - Training monitoring
 
----
+
 
 ## Usage
 
@@ -196,6 +196,10 @@ Simulate the best-performing agent with GUI visualization:
 
 ```bash
 python main.py --episodes 5
+```
+or
+```bash
+python main.py --episodes 5 --render-mode human --deterministic --step-delay 0.5
 ```
 
 Options:
@@ -257,7 +261,7 @@ Launch TensorBoard to monitor training:
 tensorboard --logdir training_logs
 ```
 
----
+
 
 ## Project Structure
 
@@ -313,7 +317,7 @@ reinforcement-learning-ml-techniques-2-summative/
 └── .gitignore                  # Git ignore rules
 ```
 
----
+
 
 ## Hyperparameter Tuning
 
@@ -358,25 +362,25 @@ Each algorithm was trained with 10 different hyperparameter configurations. This
 
 **Complete hyperparameter configurations**: `training/hyperparam_configs.py`
 
----
+
 
 ## Agent Behavior
 
 The trained DQN agent developed several key strategies: risk-stratified testing (high chronic risk → NCD test, high infection risk → infection test), conservative medication use (only after confirmed diagnosis), consistent referral of BOTH_SERIOUS cases, and adaptive resource management (more selective testing when supplies are low). The agent balances queue management pressure with diagnostic accuracy, following a learned decision tree based on patient characteristics.
 
----
+
 
 ## Performance Metrics
 
 Models were evaluated on mean episode reward (overall performance), standard deviation (policy consistency), best callback reward (peak performance), training time (efficiency), and resource usage patterns (test kits and medications per successful treatment).
 
----
+
 
 ## Technical Implementation
 
 The environment uses the Gymnasium API with normalized observations [0, 1]. Stochastic patient presentations match real clinic distributions. Training uses Stable Baselines3 with evaluation callbacks, early stopping, and TensorBoard logging. The Pygame visualization provides real-time multi-panel feedback on patient state, resources, queue status, and rewards.
 
----
+
 
 ## Testing
 
@@ -392,7 +396,7 @@ Validate training pipeline:
 python training/train_models.py --algo dqn --max-combos 1 --total-timesteps 1000
 ```
 
----
+
 
 ## Future Improvements
 
